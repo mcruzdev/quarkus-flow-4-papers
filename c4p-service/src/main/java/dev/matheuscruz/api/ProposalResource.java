@@ -28,7 +28,8 @@ public class ProposalResource {
 
     @POST
     @APIResponse(responseCode = "201", description = "Proposal submitted", headers = {
-            @Header(name = "Location", description = "Location of the proposal created", schema = @Schema(type = SchemaType.STRING, examples = {"/api/proposals/1"}))})
+            @Header(name = "Location", description = "Location of the proposal created", schema = @Schema(type = SchemaType.STRING, examples = {
+                    "/api/proposals/1" })) })
     public Response proposal(@Valid ProposalDTO request) {
 
         // ignore the output (WorkflowModel) for now
