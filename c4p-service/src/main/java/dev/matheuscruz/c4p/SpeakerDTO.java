@@ -1,4 +1,4 @@
-package dev.matheuscruz.api.data;
+package dev.matheuscruz.c4p;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

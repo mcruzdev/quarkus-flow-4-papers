@@ -1,0 +1,10 @@
+{
+  "title": "Java and Microservices",
+  "subject": "Java",
+  "description": "An introduction to Java and microservices. We will discuss basic concepts, cloud deployment, and containers, with simple examples for developers who want to understand modern application architecture.",
+  "speaker": {
+    "name": "John Doe",
+    "title": "Developer",
+    "email": "john.doe@email.com"
+  }
+}
