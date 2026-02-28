@@ -29,9 +29,8 @@ public class ProposalResource {
     public Response proposal(@Valid ProposalDTO request) {
 
         // ignore the output (WorkflowModel) for now
-        WorkflowModel workflowModel = workflow.instance(request)
-                .start()
-                .join();
+        WorkflowModel workflowModel = workflow.startInstance(request)
+                .await().indefinitely();
 
         ProposalDTO proposal = workflowModel.as(ProposalDTO.class).orElseThrow();
 

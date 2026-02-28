@@ -1,0 +1,310 @@
+<div class="min-h-screen bg-[#F5F5F5]">
+  <!-- Header -->
+  <header class="bg-[#003366] shadow-md">
+    <div class="max-w-4xl mx-auto px-4 py-5 flex items-center gap-3">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#FFD700"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="w-8 h-8 shrink-0"
+        aria-hidden="true"
+      >
+        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+        <path d="M2 17l10 5 10-5" />
+        <path d="M2 12l10 5 10-5" />
+      </svg>
+      <div>
+        <h1 class="text-white text-xl font-bold leading-tight">Call for Papers</h1>
+        <p class="text-[#4285F4] text-sm">Submit your proposal</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="max-w-4xl mx-auto px-4 py-10" id="main-content">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      <!-- Form header -->
+      <div class="bg-[#003366] px-8 py-6">
+        <h2 class="text-white text-2xl font-bold">Proposal Submission</h2>
+        <p class="text-[#4285F4] mt-1 text-sm">
+          Share your knowledge with the community. Fill in the details below to submit your talk proposal.
+        </p>
+      </div>
+
+      <!-- Form body -->
+      <form
+        [formGroup]="form"
+        (ngSubmit)="onSubmit()"
+        novalidate
+        class="px-8 py-8 space-y-8"
+        aria-label="Proposal submission form"
+      >
+        <!-- Proposal Details Section -->
+        <fieldset class="space-y-6">
+          <legend class="text-[#003366] text-lg font-semibold border-b-2 border-[#FFD700] pb-2 w-full">
+            Proposal Details
+          </legend>
+
+          <!-- Title -->
+          <div class="space-y-1">
+            <label for="title" class="block text-sm font-medium text-gray-700">
+              Title <span class="text-red-600" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="title"
+              type="text"
+              formControlName="title"
+              placeholder="Enter your talk title"
+              autocomplete="off"
+              [class]="
+                'w-full px-4 py-2.5 rounded-lg border text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent transition ' +
+                (isInvalid(titleControl)
+                  ? 'border-red-500 bg-red-50'
+                  : 'border-gray-300 bg-white')
+              "
+              [attr.aria-invalid]="isInvalid(titleControl) ? 'true' : null"
+              aria-describedby="title-error"
+              aria-required="true"
+            />
+            @if (isInvalid(titleControl)) {
+              <p id="title-error" class="text-red-600 text-sm mt-1" role="alert">
+                @if (titleControl.hasError('required')) {
+                  Title is required.
+                }
+              </p>
+            }
+          </div>
+
+          <!-- Subject -->
+          <div class="space-y-1">
+            <label for="subject" class="block text-sm font-medium text-gray-700">
+              Subject <span class="text-red-600" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="subject"
+              type="text"
+              formControlName="subject"
+              placeholder="e.g. Cloud, DevOps, Frontend, Backend..."
+              autocomplete="off"
+              [class]="
+                'w-full px-4 py-2.5 rounded-lg border text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent transition ' +
+                (isInvalid(subjectControl)
+                  ? 'border-red-500 bg-red-50'
+                  : 'border-gray-300 bg-white')
+              "
+              [attr.aria-invalid]="isInvalid(subjectControl) ? 'true' : null"
+              aria-describedby="subject-error"
+              aria-required="true"
+            />
+            @if (isInvalid(subjectControl)) {
+              <p id="subject-error" class="text-red-600 text-sm mt-1" role="alert">
+                @if (subjectControl.hasError('required')) {
+                  Subject is required.
+                }
+              </p>
+            }
+          </div>
+
+          <!-- Description -->
+          <div class="space-y-1">
+            <label for="description" class="block text-sm font-medium text-gray-700">
+              Description <span class="text-red-600" aria-hidden="true">*</span>
+            </label>
+            <p class="text-xs text-gray-500">Minimum 100 characters. Describe what attendees will learn.</p>
+            <textarea
+              id="description"
+              formControlName="description"
+              rows="6"
+              placeholder="Provide a detailed description of your talk (at least 100 characters)..."
+              [class]="
+                'w-full px-4 py-2.5 rounded-lg border text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent transition resize-y ' +
+                (isInvalid(descriptionControl)
+                  ? 'border-red-500 bg-red-50'
+                  : 'border-gray-300 bg-white')
+              "
+              [attr.aria-invalid]="isInvalid(descriptionControl) ? 'true' : null"
+              aria-describedby="description-hint description-error"
+              aria-required="true"
+            ></textarea>
+            <p id="description-hint" class="text-xs text-gray-400 text-right">
+              {{ descriptionControl.value?.length ?? 0 }} / 100 minimum characters
+            </p>
+            @if (isInvalid(descriptionControl)) {
+              <p id="description-error" class="text-red-600 text-sm mt-1" role="alert">
+                @if (descriptionControl.hasError('required')) {
+                  Description is required.
+                } @else if (descriptionControl.hasError('minlength')) {
+                  Description must be at least 100 characters long.
+                }
+              </p>
+            }
+          </div>
+        </fieldset>
+
+        <!-- Speaker Details Section -->
+        <fieldset class="space-y-6" formGroupName="speaker">
+          <legend class="text-[#003366] text-lg font-semibold border-b-2 border-[#FFD700] pb-2 w-full">
+            Speaker Information
+          </legend>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Speaker Name -->
+            <div class="space-y-1">
+              <label for="speaker-name" class="block text-sm font-medium text-gray-700">
+                Full Name <span class="text-red-600" aria-hidden="true">*</span>
+              </label>
+              <input
+                id="speaker-name"
+                type="text"
+                formControlName="name"
+                placeholder="Your full name"
+                autocomplete="name"
+                [class]="
+                  'w-full px-4 py-2.5 rounded-lg border text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent transition ' +
+                  (isInvalid(speakerNameControl)
+                    ? 'border-red-500 bg-red-50'
+                    : 'border-gray-300 bg-white')
+                "
+                [attr.aria-invalid]="isInvalid(speakerNameControl) ? 'true' : null"
+                aria-describedby="speaker-name-error"
+                aria-required="true"
+              />
+              @if (isInvalid(speakerNameControl)) {
+                <p id="speaker-name-error" class="text-red-600 text-sm mt-1" role="alert">
+                  @if (speakerNameControl.hasError('required')) {
+                    Full name is required.
+                  }
+                </p>
+              }
+            </div>
+
+            <!-- Speaker Email -->
+            <div class="space-y-1">
+              <label for="speaker-email" class="block text-sm font-medium text-gray-700">
+                Email Address <span class="text-red-600" aria-hidden="true">*</span>
+              </label>
+              <input
+                id="speaker-email"
+                type="email"
+                formControlName="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                [class]="
+                  'w-full px-4 py-2.5 rounded-lg border text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent transition ' +
+                  (isInvalid(speakerEmailControl)
+                    ? 'border-red-500 bg-red-50'
+                    : 'border-gray-300 bg-white')
+                "
+                [attr.aria-invalid]="isInvalid(speakerEmailControl) ? 'true' : null"
+                aria-describedby="speaker-email-error"
+                aria-required="true"
+              />
+              @if (isInvalid(speakerEmailControl)) {
+                <p id="speaker-email-error" class="text-red-600 text-sm mt-1" role="alert">
+                  @if (speakerEmailControl.hasError('required')) {
+                    Email address is required.
+                  } @else if (speakerEmailControl.hasError('email')) {
+                    Please enter a valid email address.
+                  }
+                </p>
+              }
+            </div>
+          </div>
+
+          <!-- Speaker Company -->
+          <div class="space-y-1">
+            <label for="speaker-company" class="block text-sm font-medium text-gray-700">
+              Company / Organization
+              <span class="text-gray-400 font-normal text-xs ml-1">(optional)</span>
+            </label>
+            <input
+              id="speaker-company"
+              type="text"
+              formControlName="company"
+              placeholder="Your company or organization"
+              autocomplete="organization"
+              class="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent transition"
+            />
+          </div>
+
+          <!-- Speaker Bio -->
+          <div class="space-y-1">
+            <label for="speaker-bio" class="block text-sm font-medium text-gray-700">
+              Short Bio
+              <span class="text-gray-400 font-normal text-xs ml-1">(optional)</span>
+            </label>
+            <textarea
+              id="speaker-bio"
+              formControlName="bio"
+              rows="3"
+              placeholder="Tell us a bit about yourself..."
+              class="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4285F4] focus:border-transparent transition resize-y"
+            ></textarea>
+          </div>
+        </fieldset>
+
+        <!-- Error alert -->
+        @if (submitError()) {
+          <div
+            class="flex items-start gap-3 bg-red-50 border border-red-300 text-red-700 rounded-lg px-4 py-3"
+            role="alert"
+            aria-live="assertive"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5 shrink-0 mt-0.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <p class="text-sm">{{ submitError() }}</p>
+          </div>
+        }
+
+        <!-- Submit button -->
+        <div class="flex justify-end pt-2">
+          <button
+            type="submit"
+            [disabled]="isSubmitting()"
+            class="inline-flex items-center gap-2 bg-[#FFD700] hover:bg-[#FFC107] text-[#003366] font-bold px-8 py-3 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FFD700] disabled:opacity-60 disabled:cursor-not-allowed"
+            [attr.aria-busy]="isSubmitting() ? 'true' : null"
+          >
+            @if (isSubmitting()) {
+              <svg
+                class="animate-spin w-5 h-5"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              Submitting...
+            } @else {
+              Submit Proposal
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Required fields note -->
+    <p class="text-center text-xs text-gray-500 mt-4">
+      Fields marked with <span class="text-red-600 font-bold" aria-hidden="true">*</span>
+      <span class="sr-only">asterisk</span> are required.
+    </p>
+  </main>
+</div>

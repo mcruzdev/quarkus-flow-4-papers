@@ -13,8 +13,8 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import java.util.concurrent.CompletableFuture;
 
-@ApplicationScoped
 @Unremovable
+@ApplicationScoped
 public class CustomEventPublisher implements EventPublisher {
 
     private static final EventFormat FORMAT = EventFormatProvider.getInstance()
