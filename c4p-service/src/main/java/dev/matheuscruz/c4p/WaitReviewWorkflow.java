@@ -1,10 +1,12 @@
 package dev.matheuscruz.c4p;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkiverse.flow.Flow;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.serverlessworkflow.api.types.Workflow;
-import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.ApplicationScoped;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -17,10 +19,13 @@ import java.util.function.Function;
 import static io.serverlessworkflow.fluent.func.FuncWorkflowBuilder.workflow;
 import static io.serverlessworkflow.fluent.func.dsl.FuncDSL.function;
 
-@Dependent
+@ApplicationScoped
 public class WaitReviewWorkflow extends Flow {
 
     private final ObjectMapper mapper;
+
+    @ConfigProperty(name = "notification.service.url", defaultValue = "http://localhost:8082")
+    private String notificationUrl;
 
     public WaitReviewWorkflow(ObjectMapper mapper) {
         this.mapper = mapper;
@@ -31,17 +36,22 @@ public class WaitReviewWorkflow extends Flow {
         return workflow("waitReviewStatusForCommunication")
                 .tasks(
                         function("updateProposalStatus", updateProposal(), ProposalReviewedEvent.class),
-                        function("requestNotification", o -> {
+                        // TODO: It should be replaced by http().POST()...
+                        function("requestNotification", message -> {
                             HttpRequest.Builder builder = HttpRequest.newBuilder();
                             try {
-                                String body = mapper.writeValueAsString(o);
+                                String body = mapper.writeValueAsString(message);
                                 HttpRequest request = builder.POST(HttpRequest.BodyPublishers.ofString(body))
-                                        .uri(URI.create("http://localhost:8082/api/notifications"))
+                                        .uri(URI.create(notificationUrl + "/api/notifications"))
+                                        .header("Content-Type", "application/json")
+                                        .header("Accept", "application/json")
                                         .build();
                                 try (HttpClient client = HttpClient.newBuilder().build()) {
                                     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
                                     return response.body();
                                 }
+                            } catch (JsonProcessingException e) {
+                                throw new UncheckedIOException("Error while serializing message", e);
                             } catch (IOException e) {
                                 throw new UncheckedIOException("Error while sending request to notification service", e);
                             } catch (InterruptedException e) {
@@ -49,14 +59,6 @@ public class WaitReviewWorkflow extends Flow {
                                 throw new RuntimeException("Error while sending request to notification service", e);
                             }
                         }, Message.class)
-//                        http()
-//                                .POST()
-//                                .uri(URI.create("http://localhost:8082/api/notifications"))
-//                                .header("Content-Type", "application/json")
-//                                .body("{ to: .message.to }").inputFrom((object, workflowContext) -> {
-//                                    Log.info("Message: " + object);
-//                                    return object;
-//                                }, Message.class)
                 )
                 .build();
     }
@@ -75,5 +77,4 @@ public class WaitReviewWorkflow extends Flow {
                     updatedProposal.getDescription());
         };
     }
-
 }

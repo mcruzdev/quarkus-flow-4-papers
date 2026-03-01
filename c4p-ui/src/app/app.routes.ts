@@ -25,5 +25,3 @@ export const routes: Routes = [
     redirectTo: '',
   },
 ];
-
-// Made with Bob

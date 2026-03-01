@@ -30,10 +30,11 @@ export class ProposalFormComponent {
     ],
     speaker: this.fb.group({
       name: ['Matheus Cruz', [Validators.required]],
-      title: ['Senior Software Engineer'],
-      email: ['matheuscruz.dev@gmail.com', [Validators.required, Validators.email]],
-      company: [''],
-      bio: [''],
+      title: ['Sr. Software Engineer'],
+      email: ['matheus.cruz@email.com', [Validators.required, Validators.email]],
+      company: ['IBM'],
+      bio: [`I am Matheus Cruz, Open Source Software Engineer (OSS 🥋)
+I am a passionate learner, open-source enthusiast, and Java developer with a drive for continuous improvement. When I’m not coding, you can find me on the Brazilian Jiu Jitsu mats, playing the guitar, or exploring new challenges. I believe in the power of community, collaboration, and creativity—both in and outside of tech.`],
     }),
   });
 
