@@ -9,6 +9,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'proposals',
+    loadComponent: () =>
+      import('./features/proposals-list/proposals-list.component').then(
+        (m) => m.ProposalsListComponent
+      ),
+  },
+  {
     path: 'success',
     loadComponent: () =>
       import('./features/success/success.component').then((m) => m.SuccessComponent),

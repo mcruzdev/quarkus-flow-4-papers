@@ -3,6 +3,8 @@ package dev.matheuscruz.c4p;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToOne;
 
 import java.util.Objects;
@@ -16,6 +18,8 @@ public class Proposal extends PanacheEntity {
     private String description;
     @OneToOne
     private Speaker speaker;
+    @Enumerated(value = EnumType.STRING)
+    private ProposalStatus status;
 
     protected Proposal() {
     }
@@ -25,6 +29,11 @@ public class Proposal extends PanacheEntity {
         this.subject = subject;
         this.description = description;
         this.speaker = Objects.requireNonNull(speaker, "speaker must not be null");
+        this.status = ProposalStatus.PENDING;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -39,7 +48,16 @@ public class Proposal extends PanacheEntity {
         return description;
     }
 
+    public ProposalStatus getStatus() {
+        return status;
+    }
+
     public Speaker getSpeaker() {
         return speaker;
+    }
+
+    public Proposal accepted(boolean accepted) {
+        this.status = accepted ? ProposalStatus.ACCEPTED : ProposalStatus.REJECTED;
+        return this;
     }
 }

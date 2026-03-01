@@ -1,5 +1,6 @@
 package dev.matheuscruz.c4p;
 
+import io.quarkus.logging.Log;
 import io.serverlessworkflow.impl.WorkflowModel;
 import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
@@ -28,13 +29,14 @@ public class ProposalResource {
                     "/api/proposals/1"}))})
     public Response proposal(@Valid ProposalDTO request) {
 
-        // ignore the output (WorkflowModel) for now
         WorkflowModel workflowModel = workflow.startInstance(request)
                 .await().indefinitely();
 
-        ProposalDTO proposal = workflowModel.as(ProposalDTO.class).orElseThrow();
+        ProposalDTO submission = workflowModel.as(ProposalDTO.class).orElseThrow();
 
-        return Response.status(201).entity(proposal).header("Location", "/api/proposal/" + proposal.id()).build();
+        Log.info("Proposal persisted into the database: " + submission);
+
+        return Response.status(201).entity(submission).header("Location", "/api/proposal/" + submission.id()).build();
     }
 
     @GET

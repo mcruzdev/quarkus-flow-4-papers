@@ -17,17 +17,18 @@ public class ProposalSubmittedListener {
     ObjectMapper mapper;
 
     @Inject
-    ReviewSubmissionWorkflow workflow;
+    ReviewProposalWorkflow workflow;
 
-    @Incoming("dev-matheuscruz-proposal-submitted")
+    @Incoming("proposal.submitted")
     public void consumeProposal(String proposal) {
+        Log.info("Proposal submitted event: " + proposal);
         try {
-            Submission submission = readSubmission(proposal);
+            Proposal submission = readProposal(proposal);
 
             workflow.startInstance(submission)
                     .subscribe()
                     .with(m -> {
-                        Log.info("ReviewSubmissionWorkflow finished with the following output: " + m);
+                        Log.info("ReviewProposalWorkflow finished with the following output: " + m);
                     }, Log::error);
 
         } catch (JsonProcessingException e) {
@@ -35,8 +36,8 @@ public class ProposalSubmittedListener {
         }
     }
 
-    private Submission readSubmission(String proposal) throws JsonProcessingException {
+    private Proposal readProposal(String proposal) throws JsonProcessingException {
         JsonNode root = mapper.readTree(proposal);
-        return mapper.treeToValue(root.get(DATA_KEY), Submission.class);
+        return mapper.treeToValue(root.get(DATA_KEY), Proposal.class);
     }
 }

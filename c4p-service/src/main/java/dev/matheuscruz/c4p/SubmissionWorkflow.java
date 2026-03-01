@@ -1,6 +1,7 @@
 package dev.matheuscruz.c4p;
 
 import io.quarkiverse.flow.Flow;
+import io.quarkus.logging.Log;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.serverlessworkflow.api.types.Workflow;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -18,12 +19,12 @@ public class SubmissionWorkflow extends Flow {
         return workflow("submissionWorkflow")
                 .tasks(
                         function("saveProposal", this::saveProposal, ProposalDTO.class),
-                        emitJson("dev.matheuscruz.proposal.submitted", SubmissionDTO.class)
+                        emitJson("dev.matheuscruz.proposal.submitted", ProposalDTO.class)
                 )
                 .build();
     }
 
-    public SubmissionDTO saveProposal(ProposalDTO input) {
+    public ProposalDTO saveProposal(ProposalDTO input) {
 
         Speaker speaker = new Speaker(input.speaker().name(), input.speaker().email(),
                 input.speaker().title());
@@ -34,6 +35,10 @@ public class SubmissionWorkflow extends Flow {
             proposal.persist();
         });
 
-        return new SubmissionDTO(proposal.id, proposal.getTitle(), proposal.getSubject(), proposal.getDescription());
+        Log.info("Proposal ID: " + proposal.id);
+
+        return new ProposalDTO(proposal.getId(), proposal.getTitle(), proposal.getSubject(), proposal.getDescription(), proposal.getStatus(), new SpeakerDTO(
+                speaker.getName(), speaker.getTitle(), speaker.getEmail()
+        ));
     }
 }

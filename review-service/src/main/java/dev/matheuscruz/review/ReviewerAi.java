@@ -27,6 +27,6 @@ Scoring criteria:
 """)
 public interface ReviewerAi {
 
-    Long scoreSubmission(Submission submission);
+    Long scoreSubmission(Proposal proposal);
 
 }

@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProposalService } from '../../services/proposal.service';
+import { NavHeaderComponent } from '../../shared/nav-header/nav-header.component';
 
 @Component({
   selector: 'app-proposal-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NavHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './proposal-form.component.html',
 })
@@ -18,12 +19,19 @@ export class ProposalFormComponent {
   readonly submitError = signal<string | null>(null);
 
   readonly form = this.fb.group({
-    title: ['', [Validators.required]],
-    subject: ['', [Validators.required]],
-    description: ['', [Validators.required, Validators.minLength(100)]],
+    title: [
+      'Building Event-Driven Workflows with Quarkus, Kafka and AI',
+      [Validators.required],
+    ],
+    subject: ['Java', [Validators.required]],
+    description: [
+      'Learn how to build event-driven workflows using Quarkus and Kafka. We will explore CloudEvents, fault tolerance, observability, and AI integration with LangChain4j to design resilient Java systems.',
+      [Validators.required, Validators.minLength(100)],
+    ],
     speaker: this.fb.group({
-      name: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
+      name: ['Matheus Cruz', [Validators.required]],
+      title: ['Senior Software Engineer'],
+      email: ['matheuscruz.dev@gmail.com', [Validators.required, Validators.email]],
       company: [''],
       bio: [''],
     }),
@@ -43,6 +51,10 @@ export class ProposalFormComponent {
 
   get speakerNameControl(): AbstractControl {
     return this.form.get('speaker.name')!;
+  }
+
+  get speakerTitleControl(): AbstractControl {
+    return this.form.get('speaker.title')!;
   }
 
   get speakerEmailControl(): AbstractControl {
@@ -79,6 +91,7 @@ export class ProposalFormComponent {
         description: value.description!,
         speaker: {
           name: value.speaker!.name!,
+          title: value.speaker!.title ?? undefined,
           email: value.speaker!.email!,
           company: value.speaker!.company ?? undefined,
           bio: value.speaker!.bio ?? undefined,

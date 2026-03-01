@@ -1,36 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { NavHeaderComponent } from '../../shared/nav-header/nav-header.component';
 
 @Component({
   selector: 'app-success',
-  imports: [RouterLink],
+  imports: [RouterLink, NavHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="min-h-screen bg-[#F5F5F5] flex flex-col">
-      <!-- Header -->
-      <header class="bg-[#003366] shadow-md">
-        <div class="max-w-4xl mx-auto px-4 py-5 flex items-center gap-3">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#FFD700"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="w-8 h-8 shrink-0"
-            aria-hidden="true"
-          >
-            <path d="M12 2L2 7l10 5 10-5-10-5z" />
-            <path d="M2 17l10 5 10-5" />
-            <path d="M2 12l10 5 10-5" />
-          </svg>
-          <div>
-            <h1 class="text-white text-xl font-bold leading-tight">Call for Papers</h1>
-            <p class="text-[#4285F4] text-sm">Submit your proposal</p>
-          </div>
-        </div>
-      </header>
+      <app-nav-header />
 
       <!-- Main content -->
       <main
@@ -69,26 +47,48 @@ import { RouterLink } from '@angular/router';
           <!-- Divider -->
           <div class="border-t border-gray-100 mb-8"></div>
 
-          <a
-            routerLink="/"
-            class="inline-flex items-center gap-2 bg-[#003366] hover:bg-[#004080] text-white font-semibold px-6 py-3 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#003366]"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a
+              routerLink="/proposals"
+              class="inline-flex items-center justify-center gap-2 bg-[#003366] hover:bg-[#004080] text-white font-semibold px-6 py-3 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#003366]"
             >
-              <line x1="19" y1="12" x2="5" y2="12" />
-              <polyline points="12 19 5 12 12 5" />
-            </svg>
-            Submit Another Proposal
-          </a>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
+              View All Proposals
+            </a>
+            <a
+              routerLink="/"
+              class="inline-flex items-center justify-center gap-2 border border-[#003366] text-[#003366] hover:bg-[#003366] hover:text-white font-semibold px-6 py-3 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#003366]"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Submit Another
+            </a>
+          </div>
         </div>
       </main>
     </div>

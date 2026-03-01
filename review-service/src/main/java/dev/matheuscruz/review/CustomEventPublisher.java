@@ -21,13 +21,13 @@ public class CustomEventPublisher implements EventPublisher {
             .resolveFormat(JsonFormat.CONTENT_TYPE);
 
     @Inject
-    @Channel("submission-reviewed")
+    @Channel("proposal.reviewed")
     Emitter<byte[]> eventEmitter;
 
     @Override
     public CompletableFuture<Void> publish(CloudEvent event) {
         try {
-            if (event.getType().equals("dev.matheuscruz.submission.reviewed")) {
+            if (event.getType().equals("dev.matheuscruz.proposal.reviewed")) {
                 byte[] structured = FORMAT.serialize(event);
                 return eventEmitter.send(structured).toCompletableFuture();
             }

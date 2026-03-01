@@ -1,8 +1,11 @@
 package dev.matheuscruz.review;
 
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cloudevents.CloudEventData;
 import io.cloudevents.jackson.JsonCloudEventData;
 import io.quarkiverse.flow.Flow;
+import io.quarkus.logging.Log;
 import io.serverlessworkflow.api.types.Workflow;
 import io.serverlessworkflow.api.types.func.JavaContextFunction;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -13,9 +16,12 @@ import static io.serverlessworkflow.fluent.func.dsl.FuncDSL.agent;
 import static io.serverlessworkflow.fluent.func.dsl.FuncDSL.emit;
 
 @ApplicationScoped
-public class ReviewSubmissionWorkflow extends Flow {
+public class ReviewProposalWorkflow extends Flow {
 
     static final int MIN_SCORE = 7;
+
+    @Inject
+    ObjectMapper mapper;
 
     @Inject
     ReviewerAi reviewer;
@@ -25,25 +31,26 @@ public class ReviewSubmissionWorkflow extends Flow {
         return workflow("reviewSubmission")
                 .tasks(
                         agent("scoreSubmission",
-                                (uniqueId, submission) -> reviewer.scoreSubmission(submission), Submission.class)
+                                (uniqueId, proposal) -> reviewer.scoreSubmission(proposal), Proposal.class)
                                 .outputAs(buildSubmissionOutput(), Long.class),
-                        emit("emitReview", emitBuilder -> {
-                            emitBuilder.event(eventBuilder -> eventBuilder.data(taskInput -> JsonCloudEventData.wrap(
-                                            JsonNodeFactory.instance.objectNode())).type("dev.matheuscruz.submission.reviewed").build()).build();
-                        }).inputFrom(buildEmitReviewInput(), ScoreSubmissionOutput.class)
+                        emit("emitProposalReviewed", "dev.matheuscruz.proposal.reviewed", input -> JsonCloudEventData.wrap(mapper.valueToTree(input)))
+                                .inputFrom(buildEmitReviewInput(), ScoreSubmissionOutput.class)
                 )
                 .build();
     }
 
     private static JavaContextFunction<ScoreSubmissionOutput, EmitReviewInput> buildEmitReviewInput() {
-        return (lastState, workflowContext) -> new EmitReviewInput(lastState.score() >= MIN_SCORE, lastState.submission().proposalId());
+        return (lastState, workflowContext) -> new EmitReviewInput(lastState.score() >= MIN_SCORE, lastState.proposal().id());
     }
 
     private static JavaContextFunction<Long, ScoreSubmissionOutput> buildSubmissionOutput() {
-        return (score, workflowContext) -> new ScoreSubmissionOutput(score, workflowContext.instanceData().input().as(Submission.class).orElseThrow());
+        return (score, workflowContext) ->
+                new ScoreSubmissionOutput(score, workflowContext.instanceData().input().as(Proposal.class).orElseThrow());
     }
 
-    public record ScoreSubmissionOutput(Long score, Submission submission) {}
+    public record ScoreSubmissionOutput(Long score, Proposal proposal) {
+    }
 
-    public record EmitReviewInput(Boolean accepted, Long proposalId) {}
+    public record EmitReviewInput(Boolean accepted, Long proposalId) {
+    }
 }
