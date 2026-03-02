@@ -3,7 +3,6 @@ package dev.matheuscruz.c4p;
 import io.quarkiverse.flow.Flow;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.serverlessworkflow.api.types.Workflow;
-import io.serverlessworkflow.api.types.func.JavaContextFunction;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -22,18 +21,17 @@ public class WaitReviewWorkflow extends Flow {
 
     @Override
     public Workflow descriptor() {
-        JavaContextFunction<Message, Message> inputFromFn = (msg, ctx) -> msg;
         return workflow("waitReviewStatusForCommunication")
                 .tasks(
                         function("updateProposalStatus", updateProposal(), ProposalReviewedEvent.class),
                         http().POST().uri(URI.create(notificationUrl + "/api/notifications"))
                                 .header("Content-Type", "application/json")
                                 .body("${.}")
-                                .inputFrom(inputFromFn, Message.class))
+                                .inputFrom(Function.identity(), MessageDTO.class))
                 .build();
     }
 
-    private static Function<ProposalReviewedEvent, Message> updateProposal() {
+    private static Function<ProposalReviewedEvent, MessageDTO> updateProposal() {
         return event -> {
             Proposal updatedProposal = QuarkusTransaction.requiringNew()
                     .call(() -> {
@@ -41,7 +39,7 @@ public class WaitReviewWorkflow extends Flow {
                         return proposal.accepted(event.accepted());
                     });
 
-            return new Message(
+            return new MessageDTO(
                     updatedProposal.getSpeaker().getEmail(),
                     updatedProposal.getStatus() == ProposalStatus.ACCEPTED,
                     updatedProposal.getDescription());
