@@ -1,0 +1,10 @@
+{
+  "title": "Building Event-Driven Workflows with Quarkus, Kafka and AI",
+  "subject": "Java",
+  "description": "Learn how to build event-driven workflows using Quarkus and Kafka. We will explore CloudEvents, fault tolerance, observability, and AI integration with LangChain4j to design resilient Java systems.",
+  "speaker": {
+    "name": "Matheus Cruz",
+    "title": "Senior Software Engineer",
+    "email": "matheuscruz.dev@gmail.com"
+  }
+}

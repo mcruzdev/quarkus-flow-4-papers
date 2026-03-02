@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="16" fill="#003366"/>
+  <!-- Layers icon (white + gold) -->
+  <path d="M16 7L6 12l10 5 10-5-10-5z" fill="#FFD700"/>
+  <path d="M6 17l10 5 10-5" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M6 22l10 5 10-5" stroke="#4285F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+<!-- Made with Bob -->

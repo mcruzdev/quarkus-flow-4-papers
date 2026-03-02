@@ -15,6 +15,8 @@
         <quarkus.platform.version>3.31.2</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.5.4</surefire-plugin.version>
+        <quarkus.flow.version>0.6.0</quarkus.flow.version>
+        <quarkus.langchain4j.ollama.version>1.7.4</quarkus.langchain4j.ollama.version>
     </properties>
 
     <dependencyManagement>
@@ -39,8 +41,18 @@
             <artifactId>quarkus-rest-jackson</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.quarkiverse.flow</groupId>
+            <artifactId>quarkus-flow-langchain4j</artifactId>
+            <version>${quarkus.flow.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-oidc-client</artifactId>
+            <artifactId>quarkus-messaging-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.langchain4j</groupId>
+            <artifactId>quarkus-langchain4j-ollama</artifactId>
+            <version>${quarkus.langchain4j.ollama.version}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
