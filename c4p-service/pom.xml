@@ -17,6 +17,7 @@
         <surefire-plugin.version>3.5.4</surefire-plugin.version>
         <version.quarkus.flow>0.6.0</version.quarkus.flow>
         <version.formatter.maven.plugin>2.29.0</version.formatter.maven.plugin>
+        <quarkus.quinoa.version>2.7.1</quarkus.quinoa.version>
     </properties>
 
     <dependencyManagement>
@@ -73,6 +74,11 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-rest-client-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.quinoa</groupId>
+            <artifactId>quarkus-quinoa</artifactId>
+            <version>${quarkus.quinoa.version}</version>
         </dependency>
 <!--        test-->
         <dependency>

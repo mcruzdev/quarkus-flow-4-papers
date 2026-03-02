@@ -1,65 +1,35 @@
 package dev.matheuscruz.c4p;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkiverse.flow.Flow;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.serverlessworkflow.api.types.Workflow;
+import io.serverlessworkflow.api.types.func.JavaContextFunction;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.function.Function;
 
 import static io.serverlessworkflow.fluent.func.FuncWorkflowBuilder.workflow;
 import static io.serverlessworkflow.fluent.func.dsl.FuncDSL.function;
+import static io.serverlessworkflow.fluent.func.dsl.FuncDSL.http;
 
 @ApplicationScoped
 public class WaitReviewWorkflow extends Flow {
 
-    private final ObjectMapper mapper;
-
     @ConfigProperty(name = "notification.service.url", defaultValue = "http://localhost:8082")
-    private String notificationUrl;
-
-    public WaitReviewWorkflow(ObjectMapper mapper) {
-        this.mapper = mapper;
-    }
+    String notificationUrl;
 
     @Override
     public Workflow descriptor() {
+        JavaContextFunction<Message, Message> inputFromFn = (msg, ctx) -> msg;
         return workflow("waitReviewStatusForCommunication")
                 .tasks(
                         function("updateProposalStatus", updateProposal(), ProposalReviewedEvent.class),
-                        // TODO: It should be replaced by http().POST()...
-                        function("requestNotification", message -> {
-                            HttpRequest.Builder builder = HttpRequest.newBuilder();
-                            try {
-                                String body = mapper.writeValueAsString(message);
-                                HttpRequest request = builder.POST(HttpRequest.BodyPublishers.ofString(body))
-                                        .uri(URI.create(notificationUrl + "/api/notifications"))
-                                        .header("Content-Type", "application/json")
-                                        .header("Accept", "application/json")
-                                        .build();
-                                try (HttpClient client = HttpClient.newBuilder().build()) {
-                                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                                    return response.body();
-                                }
-                            } catch (JsonProcessingException e) {
-                                throw new UncheckedIOException("Error while serializing message", e);
-                            } catch (IOException e) {
-                                throw new UncheckedIOException("Error while sending request to notification service", e);
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                                throw new RuntimeException("Error while sending request to notification service", e);
-                            }
-                        }, Message.class)
-                )
+                        http().POST().uri(URI.create(notificationUrl + "/api/notifications"))
+                                .header("Content-Type", "application/json")
+                                .body("${.}")
+                                .inputFrom(inputFromFn, Message.class))
                 .build();
     }
 
