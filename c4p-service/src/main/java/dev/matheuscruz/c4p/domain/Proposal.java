@@ -1,4 +1,4 @@
-package dev.matheuscruz.c4p;
+package dev.matheuscruz.c4p.domain;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Column;
@@ -56,8 +56,11 @@ public class Proposal extends PanacheEntity {
         return speaker;
     }
 
-    public Proposal accepted(boolean accepted) {
+    public void accepted(boolean accepted) {
+        if (status != ProposalStatus.PENDING) {
+            return;
+        }
+
         this.status = accepted ? ProposalStatus.ACCEPTED : ProposalStatus.REJECTED;
-        return this;
     }
 }

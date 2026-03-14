@@ -1,5 +1,8 @@
-package dev.matheuscruz.c4p;
+package dev.matheuscruz.c4p.resource;
 
+import dev.matheuscruz.c4p.application.data.ProposalSubmission;
+import dev.matheuscruz.c4p.domain.Proposal;
+import dev.matheuscruz.c4p.application.workflow.SubmissionWorkflow;
 import io.quarkus.logging.Log;
 import io.serverlessworkflow.impl.WorkflowModel;
 import jakarta.annotation.security.PermitAll;
@@ -26,13 +29,12 @@ public class ProposalResource {
     @POST
     @APIResponse(responseCode = "201", description = "Proposal submitted", headers = {
             @Header(name = "Location", description = "Location of the proposal created", schema = @Schema(type = SchemaType.STRING, examples = {
-                    "/api/proposals/1"}))})
-    public Response proposal(@Valid ProposalDTO request) {
+                    "/api/proposals/1" })) })
+    public Response proposal(@Valid ProposalSubmission request) {
 
-        WorkflowModel workflowModel = workflow.startInstance(request)
-                .await().indefinitely();
+        WorkflowModel workflowModel = workflow.startInstance(request).await().indefinitely();
 
-        ProposalDTO submission = workflowModel.as(ProposalDTO.class).orElseThrow();
+        ProposalSubmission submission = workflowModel.as(ProposalSubmission.class).orElseThrow();
 
         Log.info("Proposal persisted into the database: " + submission);
 

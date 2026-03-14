@@ -4,7 +4,7 @@ import io.cloudevents.CloudEvent;
 import io.cloudevents.core.format.EventFormat;
 import io.cloudevents.core.provider.EventFormatProvider;
 import io.cloudevents.jackson.JsonFormat;
-import io.quarkus.arc.Unremovable;
+import io.quarkus.logging.Log;
 import io.serverlessworkflow.impl.events.EventPublisher;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -13,9 +13,8 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import java.util.concurrent.CompletableFuture;
 
-@Unremovable
 @ApplicationScoped
-public class CustomEventPublisher implements EventPublisher {
+public class ProposalReviewEventPublisher implements EventPublisher {
 
     private static final EventFormat FORMAT = EventFormatProvider.getInstance()
             .resolveFormat(JsonFormat.CONTENT_TYPE);
@@ -29,6 +28,7 @@ public class CustomEventPublisher implements EventPublisher {
         try {
             if (event.getType().equals("dev.matheuscruz.proposal.reviewed")) {
                 byte[] structured = FORMAT.serialize(event);
+                Log.info("Sending event dev.matheuscruz.proposa.reviewed");
                 return eventEmitter.send(structured).toCompletableFuture();
             }
             return CompletableFuture.completedFuture(null);

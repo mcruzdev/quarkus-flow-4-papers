@@ -18,6 +18,13 @@ export class ProposalsListComponent implements OnInit {
   readonly loadError = signal<string | null>(null);
 
   ngOnInit(): void {
+    this.loadProposals();
+  }
+
+  loadProposals(): void {
+    this.isLoading.set(true);
+    this.loadError.set(null);
+    
     this.proposalService.getAll().subscribe({
       next: (data) => {
         this.proposals.set(data);
@@ -28,6 +35,10 @@ export class ProposalsListComponent implements OnInit {
         this.isLoading.set(false);
       },
     });
+  }
+
+  refresh(): void {
+    this.loadProposals();
   }
 
   statusLabel(status: ProposalStatus | undefined): string {

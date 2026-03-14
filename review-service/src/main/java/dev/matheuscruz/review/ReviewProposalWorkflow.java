@@ -1,11 +1,8 @@
 package dev.matheuscruz.review;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cloudevents.CloudEventData;
 import io.cloudevents.jackson.JsonCloudEventData;
 import io.quarkiverse.flow.Flow;
-import io.quarkus.logging.Log;
 import io.serverlessworkflow.api.types.Workflow;
 import io.serverlessworkflow.api.types.func.JavaContextFunction;
 import jakarta.enterprise.context.ApplicationScoped;
