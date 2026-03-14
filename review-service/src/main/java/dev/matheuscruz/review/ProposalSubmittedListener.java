@@ -24,7 +24,6 @@ public class ProposalSubmittedListener {
         Log.info("Proposal submitted event: " + proposal);
         try {
             Proposal submission = readProposal(proposal);
-
             workflow.startInstance(submission)
                     .subscribe()
                     .with(m -> {

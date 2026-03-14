@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.acme</groupId>
+
+    <parent>
+        <groupId>org.acme</groupId>
+        <artifactId>flow-4-papers</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
     <artifactId>c4p-service</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
         <compiler-plugin.version>3.14.1</compiler-plugin.version>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.31.2</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.5.4</surefire-plugin.version>
-        <version.quarkus.flow>0.6.0</version.quarkus.flow>
-        <version.formatter.maven.plugin>2.29.0</version.formatter.maven.plugin>
         <quarkus.quinoa.version>2.7.1</quarkus.quinoa.version>
     </properties>
 
@@ -51,7 +52,7 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-jdbc-h2</artifactId>
+            <artifactId>quarkus-jdbc-mysql</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -60,12 +61,12 @@
         <dependency>
             <groupId>io.quarkiverse.flow</groupId>
             <artifactId>quarkus-flow</artifactId>
-            <version>${version.quarkus.flow}</version>
+            <version>${quarkus.flow.version}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkiverse.flow</groupId>
             <artifactId>quarkus-flow-messaging</artifactId>
-            <version>${version.quarkus.flow}</version>
+            <version>${quarkus.flow.version}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>

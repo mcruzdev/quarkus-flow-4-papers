@@ -1,8 +1,10 @@
-package dev.matheuscruz.c4p;
+package dev.matheuscruz.c4p.application.messaging;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.matheuscruz.c4p.domain.ProposalReviewedEvent;
+import dev.matheuscruz.c4p.application.workflow.WaitReviewWorkflow;
 import io.quarkus.logging.Log;
 import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Uni;
@@ -11,7 +13,6 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 @ApplicationScoped
 public class ProposalReviewedListener {
-
 
     final ObjectMapper mapper;
     final WaitReviewWorkflow workflow;
@@ -25,8 +26,7 @@ public class ProposalReviewedListener {
     @Blocking
     public Uni<Void> handleProposalReviewed(String payload) {
         Log.info("Proposal reviewed event: " + payload);
-        return workflow.startInstance(readSubmissionReviewedEvent(payload))
-                .onItem()
+        return workflow.startInstance(readSubmissionReviewedEvent(payload)).onItem()
                 .transformToUni(model -> Uni.createFrom().voidItem());
     }
 

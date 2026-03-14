@@ -15,11 +15,11 @@ public class NotificationResource {
     @POST
     @Produces({"application/json"})
     @Consumes({"application/json"})
-    public Response notification(Message message) {
+    public Response notification(SendEmailPayload sendEmailPayload) {
 
-        Log.info(">>> Email sent to: " + message.to());
+        Log.info(">>> Email sent to: " + sendEmailPayload.to());
 
-        if (message.accepted()) {
+        if (sendEmailPayload.accepted()) {
             Log.info(">>> Content: " + """
                     Congratulations, your proposal was accepted!
                     """);

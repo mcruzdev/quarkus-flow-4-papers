@@ -1,4 +1,4 @@
-package dev.matheuscruz.c4p;
+package dev.matheuscruz.c4p.domain;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
